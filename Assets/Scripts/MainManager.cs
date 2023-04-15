@@ -12,11 +12,15 @@ public class MainManager : MonoBehaviour
 
     public Text ScoreText;
     public GameObject GameOverText;
+    public Text bestScore;
     
     private bool m_Started = false;
-    private int m_Points;
+    private int m_Points = 0;
+    public int saveScore;
     
     private bool m_GameOver = false;
+
+    public static MainManager Instance;
 
     
     // Start is called before the first frame update
@@ -24,6 +28,8 @@ public class MainManager : MonoBehaviour
     {
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
+
+        bestScore.text = "Best Score : " + MenuManager.Instance.name + " : " + MenuManager.Instance.score;
         
         int[] pointCountArray = new [] {1,1,2,2,5,5};
         for (int i = 0; i < LineCount; ++i)
@@ -72,5 +78,19 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        if (m_Points > MenuManager.Instance.score)
+        {
+            MenuManager.Instance.score = m_Points;
+
+            if(MenuManager.Instance.nextName != null)
+            {
+                MenuManager.Instance.name = MenuManager.Instance.nextName;
+            }
+
+            bestScore.text = "Best Score : " + MenuManager.Instance.name + " : " + MenuManager.Instance.score;
+        }
+        MenuManager menuManager;
+        menuManager = GameObject.Find("MenuManager").GetComponent<MenuManager>();
+        menuManager.SaveData();
     }
 }
